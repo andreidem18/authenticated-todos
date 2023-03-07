@@ -1,12 +1,14 @@
 import React from 'react';
 import { Card, Col, Form } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
-import { checkToDoThunk } from '../store/slices/todos.slice';
+import { checkToDoThunk, deleteTaskThunk } from '../store/slices/todos.slice';
 import ButtonsEditDelete from './ButtonsEditDelete';
 
 const ToDoCardDefault = ({ todo, edit }) => {
 
     const dispatch = useDispatch();
+
+    const remove = () => dispatch(deleteTaskThunk(todo.id))
     return (
         <Col>
             <Card>
@@ -21,7 +23,7 @@ const ToDoCardDefault = ({ todo, edit }) => {
                         checked={todo.isCompleted}
                         onChange={() => dispatch(checkToDoThunk(todo))}
                     />
-                    <ButtonsEditDelete onUpdate={edit}/>
+                    <ButtonsEditDelete onUpdate={edit} onDelete={remove}/>
                 </Card.Body>
             </Card>
         </Col>

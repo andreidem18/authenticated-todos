@@ -12,6 +12,9 @@ export const todosSlice = createSlice({
         updateTodo: (state, { payload: toDo }) => {
             const index = state.findIndex(t => t.id === toDo.id);
             state[index] = toDo;
+        },
+        deleteTask: (state, { payload: id }) => {
+            return state.filter(todo => todo.id !== id);
         }
     }
 })
@@ -24,9 +27,8 @@ export const getTodosThunk = () => (dispatch) => {
 }
 
 export const addToDoThunk = task => (dispatch, getState) => {
-    const userId = getState().user.id;
     dispatch(genericRequestThunk(async () => {
-        const res = await axios().post('/todos', { task, userId });
+        const res = await axios().post('/todos', { task, isCompleted: false });
         dispatch(addTodo(res.data));
     }))
 }
@@ -45,6 +47,13 @@ export const updateTaskThunk = (task, id) => dispatch => {
     }, "To Do updated succesfully"));
 }
 
-export const { setTodos, addTodo, updateTodo } = todosSlice.actions;
+export const deleteTaskThunk = id => dispatch => {
+    dispatch(genericRequestThunk(async () => {
+        await axios().delete(`/todos/${id}`)
+        dispatch(deleteTask(id));
+    }))
+}
+
+export const { setTodos, addTodo, updateTodo, deleteTask } = todosSlice.actions;
 
 export default todosSlice.reducer;
